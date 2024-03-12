@@ -1,20 +1,32 @@
-import type { Actions, PageServerLoad } from './$types.js';
-
-import { superValidate, message } from 'sveltekit-superforms';
+import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { z } from 'zod';
 import { fail } from '@sveltejs/kit';
-import { schema } from './schema.js';
 
-export const load: PageServerLoad = async () => {
-	return { form: await superValidate(zod(schema)) };
+// Define outside the load function so the adapter can be cached
+const schema = z.object({
+	name: z.string().default('Hello world!'),
+	email: z.string().email()
+});
+
+export const load = async () => {
+	const form = await superValidate(zod(schema));
+
+	// Always return { form } in load functions
+	return { form };
 };
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ request }) => {
 		const form = await superValidate(request, zod(schema));
 		console.log(form);
 
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) {
+			// Again, return { form } and things will just work.
+			return fail(400, { form });
+		}
+
+		// TODO: Do something with the validated form.data
 
 		return message(form, 'Form posted successfully!');
 	}
