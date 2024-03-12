@@ -41,7 +41,9 @@
 </form>
 
 <hr />
-<p><a target="_blank" href="https://superforms.rocks/api">API Reference</a></p>
+<p>
+	💥 <a target="_blank" href="https://superforms.rocks">Created with Superforms for SvelteKit</a> 💥
+</p>
 
 <style>
 	.invalid {
