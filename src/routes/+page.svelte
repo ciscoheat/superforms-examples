@@ -1,43 +1,35 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>
 
-<SuperDebug data={$form} />
-
-<h3>Superforms testing ground - Zod</h3>
-
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
-	</div>
-{/if}
+{#if $message}<h3>{$message}</h3>{/if}
 
 <form method="POST" use:enhance>
-	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
+	<label for="name">Name</label>
+	<input
+		type="text"
+		name="name"
+		aria-invalid={$errors.name ? 'true' : undefined}
+		bind:value={$form.name}
+		{...$constraints.name}
+	/>
+	{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
 
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
+	<label for="email">E-mail</label>
+	<input
+		type="email"
+		name="email"
+		aria-invalid={$errors.email ? 'true' : undefined}
+		bind:value={$form.email}
+		{...$constraints.email}
+	/>
+	{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
 
-	<button>Submit</button>
+	<div><button>Submit</button></div>
 </form>
 
 <hr />
@@ -48,38 +40,5 @@
 <style>
 	.invalid {
 		color: red;
-	}
-
-	.status {
-		color: white;
-		padding: 4px;
-		padding-left: 8px;
-		border-radius: 2px;
-		font-weight: 500;
-	}
-
-	.status.success {
-		background-color: seagreen;
-	}
-
-	.status.error {
-		background-color: #ff2a02;
-	}
-
-	input {
-		background-color: #ddd;
-	}
-
-	a {
-		text-decoration: underline;
-	}
-
-	hr {
-		margin-top: 4rem;
-	}
-
-	form {
-		padding-top: 1rem;
-		padding-bottom: 1rem;
 	}
 </style>
