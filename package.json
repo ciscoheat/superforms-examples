@@ -10,7 +10,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
