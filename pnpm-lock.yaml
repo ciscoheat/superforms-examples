@@ -32,12 +32,18 @@ devDependencies:
   eslint-plugin-svelte:
     specifier: ^2.36.0-next.4
     version: 2.36.0-next.10(eslint@8.57.0)(svelte@5.0.0-next.75)
+  normalize.css:
+    specifier: ^8.0.1
+    version: 8.0.1
   prettier:
     specifier: ^3.1.1
     version: 3.2.5
   prettier-plugin-svelte:
     specifier: ^3.1.2
     version: 3.2.2(prettier@3.2.5)(svelte@5.0.0-next.75)
+  sakura.css:
+    specifier: ^1.5.0
+    version: 1.5.0
   svelte:
     specifier: ^5.0.0-next.1
     version: 5.0.0-next.75
@@ -1853,6 +1859,10 @@ packages:
     dev: true
     optional: true
 
+  /normalize.css@8.0.1:
+    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
+    dev: true
+
   /npm-run-path@5.3.0:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -2129,6 +2139,10 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mri: 1.2.0
+    dev: true
+
+  /sakura.css@1.5.0:
+    resolution: {integrity: sha512-AcAZa9F4SCs2xaKLWcXQxJxKfeod2PN3sR31+R22MKuyoJxNChH1wBG4mQaY9gVpJ3VpNA1XHPOrOM9hFo9cSw==}
     dev: true
 
   /sander@0.5.1:
