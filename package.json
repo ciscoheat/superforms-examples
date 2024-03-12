@@ -11,7 +11,8 @@
 		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main"
+		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main",
+		"push": "git push --all origin"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
