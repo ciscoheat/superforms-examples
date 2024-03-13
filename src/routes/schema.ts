@@ -1,7 +1,6 @@
-import { z } from 'zod';
+import { Type } from '@sinclair/typebox';
 
-// Define at the top-level so it stays in memory and the adapter can be cached
-export const schema = z.object({
-	name: z.string().default('Hello world!'),
-	email: z.string().email()
+export const schema = Type.Object({
+	name: Type.String({ default: 'Hello world!' }),
+	email: Type.String({ format: 'email' })
 });
