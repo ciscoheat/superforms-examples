@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import Vine from '@vinejs/vine';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = Vine.object({
+	name: Vine.string(),
+	email: Vine.string().email()
 });
