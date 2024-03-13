@@ -1,7 +1,6 @@
-import { z } from 'zod';
+import Joi from 'joi';
 
-// Define at the top-level so it stays in memory and the adapter can be cached
-export const schema = z.object({
-	name: z.string().default('Hello world!'),
-	email: z.string().email()
+export const schema = Joi.object({
+	name: Joi.string().default('Hello world!'),
+	email: Joi.string().email().required()
 });
