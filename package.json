@@ -39,6 +39,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"zod": "^3.24.2"
+		"@vinejs/vine": "^1.7.1"
 	}
 }
