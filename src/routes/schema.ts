@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { Type } from '@sinclair/typebox';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = Type.Object({
+	name: Type.String({ default: 'Hello world!' }),
+	email: Type.String({ format: 'email' })
 });
