@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { object, string } from 'yup';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = object({
+	name: string().default('Hello world!'),
+	email: string().email().required()
 });
