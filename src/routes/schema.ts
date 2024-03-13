@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { type } from 'arktype';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = type({
+	name: 'string',
+	email: 'email'
 });
