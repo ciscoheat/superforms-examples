@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import Joi from 'joi';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = Joi.object({
+	name: Joi.string().default('Hello world!'),
+	email: Joi.string().email().required()
 });

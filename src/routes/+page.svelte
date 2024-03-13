@@ -10,7 +10,7 @@
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
+<h3>Superforms testing ground - Joi</h3>
 
 {#if $message}
 	<!-- eslint-disable-next-line svelte/valid-compile -->
