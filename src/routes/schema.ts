@@ -1,7 +1,6 @@
-import { z } from 'zod';
+import { object, string, email, optional } from 'valibot';
 
-// Define at the top-level so it stays in memory and the adapter can be cached
-export const schema = z.object({
-	name: z.string().default('Hello world!'),
-	email: z.string().email()
+export const schema = object({
+	name: optional(string(), 'Hello world!'),
+	email: string([email()])
 });
