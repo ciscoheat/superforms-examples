@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { object, string, email, optional } from 'valibot';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+export const schema = object({
+	name: optional(string(), 'Hello world!'),
+	email: string([email()])
 });
