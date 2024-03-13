@@ -1,13 +1,7 @@
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { z } from 'zod';
 import { fail } from '@sveltejs/kit';
-
-// Define outside the load function so the adapter can be cached
-const schema = z.object({
-	name: z.string().default('Hello world!'),
-	email: z.string().email()
-});
+import { schema } from './schema.js';
 
 export const load = async () => {
 	const form = await superValidate(zod(schema));
