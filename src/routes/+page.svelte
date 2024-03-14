@@ -1,53 +1,94 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
+	import { page } from '$app/stores';
+	import { superForm } from 'sveltekit-superforms/client';
+	//import SuperDebug from 'sveltekit-superforms'
+	import spinner from './spinner.svg';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const { message, enhance, delayed, formId } = superForm(data.form, {
+		delayMs: 300,
+		clearOnSubmit: 'errors'
+	});
+
+	// eslint-disable-next-line svelte/valid-compile
+	$page;
 </script>
 
-<SuperDebug data={$form} />
+<h3>Superforms data list actions</h3>
 
-<h3>Superforms testing ground - Zod</h3>
-
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
-	</div>
-{/if}
-
-<form method="POST" use:enhance>
-	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
-
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
-
-	<button>Submit</button>
-</form>
-
-<hr />
 <p>
-	💥 <a target="_blank" href="https://superforms.rocks">Created with Superforms for SvelteKit</a> 💥
+	How to use a single superform in a list of items, with a delete button for each row. Uses <a
+		href="https://superforms.rocks/concepts/multiple-forms"
+		target="_blank">$formId</a
+	>
+	to be able to share the
+	<a href="https://superforms.rocks/concepts/timers" target="_blank">$delayed</a> timer across the whole
+	list.
 </p>
 
+<div
+	class="status"
+	class:hidden={!$message}
+	class:error={$page.status >= 400}
+	class:success={$page.status == 200}
+>
+	{$message}
+</div>
+
+<form method="POST" use:enhance>
+	<table>
+		<thead>
+			<tr><th>Id</th><th>Name</th><th>Locked</th><th>Action</th></tr>
+		</thead>
+		<tbody>
+			{#each data.constellations as c}
+				<tr>
+					<td>{c.id}</td>
+					<td>{c.name}</td>
+					<td>{c.locked ? 'Yes' : 'No'}</td>
+					<td class="has-spinner">
+						<button
+							name="id"
+							value={c.id}
+							class="delete"
+							onclick={() => ($formId = c.id.toString())}>Delete</button
+						>
+
+						{#if $delayed && $formId == c.id.toString()}
+							<img alt="Loading..." class="spinner" src={spinner} />
+						{/if}
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</form>
+
 <style>
-	.invalid {
-		color: red;
+	a {
+		text-decoration: underline;
+	}
+
+	.hidden {
+		visibility: hidden;
+	}
+
+	.has-spinner {
+		width: 160px;
+	}
+
+	.spinner {
+		margin-bottom: 0;
+		vertical-align: top;
+	}
+
+	.delete {
+		background-color: darkred;
+	}
+
+	tr:nth-child(odd) td {
+		background-color: #eee;
 	}
 
 	.status {
@@ -56,6 +97,8 @@
 		padding-left: 8px;
 		border-radius: 2px;
 		font-weight: 500;
+		position: sticky;
+		top: 0;
 	}
 
 	.status.success {
@@ -63,19 +106,7 @@
 	}
 
 	.status.error {
-		background-color: #ff2a02;
-	}
-
-	input {
-		background-color: #ddd;
-	}
-
-	a {
-		text-decoration: underline;
-	}
-
-	hr {
-		margin-top: 4rem;
+		background-color: darkred;
 	}
 
 	form {
