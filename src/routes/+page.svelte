@@ -1,61 +1,74 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
+	import Form from '$lib/Form.svelte';
+	import TextField from '$lib/TextField.svelte';
 
 	let { data } = $props();
-
-	const { form, errors, message, enhance } = superForm(data.form);
 </script>
 
-<SuperDebug data={$form} />
+<h3>Multiple componentized Forms</h3>
+<hr />
 
-<h3>Superforms testing ground - Zod</h3>
+<h4>Register Form</h4>
 
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
-	</div>
-{/if}
+<!-- Form with dataType 'form' -->
+<Form action="?/register" data={data.regForm} invalidateAll={false} let:form let:message>
+	{#if message}
+		<div
+			class="status"
+			class:error={message.status >= 400}
+			class:success={!message.status || message.status < 300}
+		>
+			{message.text}
+		</div>
+	{/if}
 
-<form method="POST" use:enhance>
-	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
+	<TextField type="text" {form} field="name" label="Name"></TextField>
+	<TextField type="text" {form} field="email" label="E-Mail"></TextField>
+	<p><button>Submit</button></p>
+</Form>
 
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
+<hr />
 
-	<button>Submit</button>
-</form>
+<h4>Another Form</h4>
+
+<!-- Form with dataType 'json' -->
+<Form
+	action="?/edit"
+	data={data.profileForm}
+	dataType="json"
+	invalidateAll={false}
+	let:form
+	let:message
+>
+	{#if message}
+		<div
+			class="status"
+			class:error={message.status >= 400}
+			class:success={!message.status || message.status < 300}
+		>
+			{message.text}
+		</div>
+	{/if}
+	<TextField type="text" {form} field="name" label="Name"></TextField>
+	<TextField type="number" {form} field="age" label="Age"></TextField>
+	<p><button>Submit</button></p>
+</Form>
 
 <hr />
 <p>
-	💥 <a target="_blank" href="https://superforms.rocks">Created with Superforms for SvelteKit</a> 💥
+	<a target="_blank" href="https://superforms.rocks/components"
+		>Documentation about componentization here</a
+	>
 </p>
 
 <style>
-	.invalid {
-		color: red;
-	}
-
 	.status {
 		color: white;
-		padding: 4px;
+		padding: 6px;
 		padding-left: 8px;
 		border-radius: 2px;
 		font-weight: 500;
+		margin-block: 0.75em;
 	}
 
 	.status.success {
@@ -66,20 +79,7 @@
 		background-color: #ff2a02;
 	}
 
-	input {
-		background-color: #ddd;
-	}
-
-	a {
-		text-decoration: underline;
-	}
-
 	hr {
-		margin-top: 4rem;
-	}
-
-	form {
-		padding-top: 1rem;
-		padding-bottom: 1rem;
+		margin: 2rem 0;
 	}
 </style>

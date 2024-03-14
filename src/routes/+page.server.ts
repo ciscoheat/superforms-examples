@@ -1,21 +1,34 @@
-import type { Actions, PageServerLoad } from './$types.js';
-
+import type { Actions } from './$types.js';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { registerSchema, profileSchema } from '$lib/schema';
 import { fail } from '@sveltejs/kit';
-import { schema } from './schema.js';
 
-export const load: PageServerLoad = async () => {
-	return { form: await superValidate(zod(schema)) };
+export const load = async () => {
+	const regForm = await superValidate(zod(registerSchema));
+	const profileForm = await superValidate(zod(profileSchema));
+
+	return { regForm, profileForm };
 };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await superValidate(request, zod(schema));
-		console.log(form);
+export const actions = {
+	register: async ({ request }) => {
+		const regForm = await superValidate(request, zod(registerSchema));
 
-		if (!form.valid) return fail(400, { form });
+		console.log('register', regForm);
 
-		return message(form, 'Form posted successfully!');
+		if (!regForm.valid) return fail(400, { regForm });
+
+		return message(regForm, { text: 'Form "register" posted successfully!' });
+	},
+
+	edit: async ({ request }) => {
+		const profileForm = await superValidate(request, zod(profileSchema));
+
+		console.log('edit', profileForm);
+
+		if (!profileForm.valid) return fail(400, { profileForm });
+
+		return message(profileForm, { text: 'Form "profile" posted successfully!' });
 	}
-};
+} satisfies Actions;
