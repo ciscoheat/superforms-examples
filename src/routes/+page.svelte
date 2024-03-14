@@ -1,85 +1,63 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const { form, errors, enhance, message } = superForm(data.form, {
+		resetForm: false,
+		clearOnSubmit: 'none'
+	});
+
+	let menu = ['Cookies and cream', 'Mint choc chip', 'Raspberry ripple'];
 </script>
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
-
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
-	</div>
-{/if}
-
 <form method="POST" use:enhance>
+	<h2>Size</h2>
+
 	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		<input type="radio" bind:group={$form.scoops} name="scoops" value={1} />
+		One scoop
 	</label>
 
 	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
+		<input type="radio" bind:group={$form.scoops} name="scoops" value={2} />
+		Two scoops
 	</label>
 
+	<label>
+		<input type="radio" bind:group={$form.scoops} name="scoops" value={3} />
+		Three scoops
+	</label>
+
+	{#if $errors.scoops}<p>{$errors.scoops}</p>{/if}
+
+	<h2>Flavours</h2>
+
+	{#each menu as flavour}
+		<label>
+			<input type="checkbox" bind:group={$form.flavours} name="flavours" value={flavour} />
+			{flavour}
+		</label>
+	{/each}
+
+	{#if $errors.flavours?._errors}<p>{$errors.flavours._errors}</p>{/if}
+
+	{#if $message}<p>{$message}</p>{/if}
 	<button>Submit</button>
 </form>
 
-<hr />
-<p>
-	💥 <a target="_blank" href="https://superforms.rocks">Created with Superforms for SvelteKit</a> 💥
+<p class="info">
+	<a href="https://svelte.dev/tutorial/group-inputs" target="_blank"
+		>Original code from Svelte documentation</a
+	>
 </p>
 
 <style>
-	.invalid {
-		color: red;
-	}
-
-	.status {
-		color: white;
-		padding: 4px;
-		padding-left: 8px;
-		border-radius: 2px;
-		font-weight: 500;
-	}
-
-	.status.success {
-		background-color: seagreen;
-	}
-
-	.status.error {
-		background-color: #ff2a02;
-	}
-
-	input {
-		background-color: #ddd;
-	}
-
-	a {
-		text-decoration: underline;
-	}
-
-	hr {
+	.info {
+		border-top: 1px solid gray;
 		margin-top: 4rem;
-	}
-
-	form {
-		padding-top: 1rem;
-		padding-bottom: 1rem;
 	}
 </style>
