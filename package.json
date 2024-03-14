@@ -39,6 +39,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/throttle-debounce": "^5.0.2",
+		"throttle-debounce": "^5.0.0",
 		"zod": "^4.1.11"
 	}
 }
