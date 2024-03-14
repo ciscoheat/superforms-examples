@@ -6,6 +6,7 @@
 	export let data;
 
 	const { form, errors, enhance, message } = superForm(data.form, {
+		resetForm: false,
 		clearOnSubmit: 'none'
 	});
 </script>
