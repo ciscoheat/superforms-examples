@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-export const schema = z.object({
-	name: z.string().min(2),
+export const schemaStep1 = z.object({
+	name: z.string().min(1)
+});
+
+export const schemaStep2 = schemaStep1.extend({
 	email: z.string().email()
 });
