@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
+	import { flavours } from './schema.js';
 	import SuperDebug from 'sveltekit-superforms';
 
 	let { data } = $props();
 
 	const { form, errors, enhance, message } = superForm(data.form, {
-		resetForm: false,
 		clearOnSubmit: 'none'
 	});
-
-	let menu = ['Cookies and cream', 'Mint choc chip', 'Raspberry ripple'];
 </script>
 
 <SuperDebug data={$form} />
@@ -17,36 +15,28 @@
 <form method="POST" use:enhance>
 	<h2>Size</h2>
 
-	<label>
-		<input type="radio" bind:group={$form.scoops} name="scoops" value={1} />
-		One scoop
-	</label>
-
-	<label>
-		<input type="radio" bind:group={$form.scoops} name="scoops" value={2} />
-		Two scoops
-	</label>
-
-	<label>
-		<input type="radio" bind:group={$form.scoops} name="scoops" value={3} />
-		Three scoops
-	</label>
+	<select name="scoops" bind:value={$form.scoops}>
+		{#each ['One scoop', 'Two scoops', 'Three scoops'] as scoop, i}
+			<option value={i + 1} selected={$form.scoops == i + 1}>{scoop}</option>
+		{/each}
+	</select>
 
 	{#if $errors.scoops}<p>{$errors.scoops}</p>{/if}
 
 	<h2>Flavours</h2>
 
-	{#each menu as flavour}
-		<label>
-			<input type="checkbox" bind:group={$form.flavours} name="flavours" value={flavour} />
-			{flavour}
-		</label>
-	{/each}
+	<!-- Note that the selected attribute is required for this to work without JS -->
+	<select multiple name="flavours" bind:value={$form.flavours}>
+		{#each flavours as flavour}
+			<option value={flavour} selected={$form.flavours.includes(flavour)}>{flavour}</option>
+		{/each}
+	</select>
 
 	{#if $errors.flavours?._errors}<p>{$errors.flavours._errors}</p>{/if}
 
 	{#if $message}<p>{$message}</p>{/if}
-	<button>Submit</button>
+
+	<div><button>Submit</button></div>
 </form>
 
 <p class="info">
