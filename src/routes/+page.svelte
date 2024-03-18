@@ -1,43 +1,78 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { schema } from './schema.js';
+	import { fileProxy, filesFieldProxy, superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const superform = superForm(data.form, {
+		validators: zod(schema),
+		resetForm: true
+	});
+	const { form, message, enhance, errors } = superform;
+
+	const files = filesFieldProxy(superform, 'images');
+	const { values, valueErrors } = files;
+
+	const file = fileProxy(form, 'image');
+
+	/////////////////////////////////////////////////////////////////////////////
+
+	function setFile() {
+		file.set(new File(['1234566'], 'test.txt', { type: 'text/plain' }));
+	}
+
+	function addFile() {
+		const newFile = new File(['7890123'], 'test2.txt', { type: 'text/plain' });
+		files.values.update(($files) => [...$files, newFile]);
+	}
 </script>
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
+{#if $message}<h4>{$message}</h4>{/if}
 
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
-	</div>
-{/if}
-
-<form method="POST" use:enhance>
+<form method="POST" enctype="multipart/form-data" use:enhance>
 	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
-
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
+		Upload one file, max 100 Kb: <input
+			bind:files={$file}
+			accept="image/png, image/jpeg"
+			name="image"
+			type="file"
 		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
+		{#if $errors.image}
+			<div class="invalid">{$errors.image}</div>
+		{/if}
 	</label>
-
-	<button>Submit</button>
+	<label>
+		Upload files, max 100 Kb: <input
+			multiple
+			bind:files={$values}
+			accept="image/png, image/jpeg"
+			name="images"
+			type="file"
+		/>
+		<ul class="invalid">
+			{#each $valueErrors as error, i}
+				{#if error}
+					<li>Image {i + 1}: {error}</li>
+				{/if}
+			{/each}
+		</ul>
+	</label>
+	<div class="buttons">
+		<div><button>Submit</button></div>
+		<div class="button-group">
+			<b>Actions</b>
+			<div>
+				<button type="button" onclick={setFile}>Set file programmatically</button>
+			</div>
+			<div>
+				<button type="button" onclick={addFile}>Add a file</button>
+			</div>
+		</div>
+	</div>
 </form>
 
 <hr />
@@ -46,40 +81,30 @@
 </p>
 
 <style>
-	.invalid {
-		color: red;
+	.buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
-	.status {
-		color: white;
-		padding: 4px;
-		padding-left: 8px;
-		border-radius: 2px;
-		font-weight: 500;
-	}
-
-	.status.success {
-		background-color: seagreen;
-	}
-
-	.status.error {
-		background-color: #ff2a02;
-	}
-
-	input {
-		background-color: #ddd;
-	}
-
-	a {
-		text-decoration: underline;
-	}
-
-	hr {
-		margin-top: 4rem;
+	.button-group {
+		margin: 1rem 0;
+		border: 2px dashed #1d7484;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
 	form {
-		padding-top: 1rem;
-		padding-bottom: 1rem;
+		margin: 2rem 0;
+
+		input {
+			background-color: #dedede;
+		}
+
+		.invalid {
+			color: crimson;
+		}
 	}
 </style>
