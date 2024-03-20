@@ -1,43 +1,69 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
+	import { superForm, defaults, intProxy } from 'sveltekit-superforms';
+	import type { Infer } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
+	import { valibot } from 'sveltekit-superforms/adapters';
+	import { schema } from './schema.js';
+	import spinner from './spinner.svg';
 
-	let { data } = $props();
+	const data = defaults(valibot(schema));
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	let photoUrl = '';
+
+	const { form, errors, message, enhance, delayed } = superForm<
+		Infer<typeof schema>,
+		{ status: number; text: string } // Strongly typed status message
+	>(data, {
+		SPA: true,
+		resetForm: false,
+		clearOnSubmit: 'errors-and-message',
+		validators: valibot(schema),
+		async onUpdate({ form }) {
+			if (!form.valid) return;
+			try {
+				const { results } = await fetch(`https://randomuser.me/api/?seed=${form.data.id}`).then(
+					(response) => response.json()
+				);
+
+				const user = results[0];
+				const name = `${user.name.first} ${user.name.last}`;
+
+				photoUrl = user.picture.large;
+				form.message = { status: 200, text: `${name}, brought to you by randomuser.me` };
+			} catch (e) {
+				form.message = { status: 500, text: `User not found.` };
+			}
+		}
+	});
+
+	const id = intProxy(form, 'id', { empty: 'zero' });
 </script>
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Valibot</h3>
+<h3>SPA with Valibot</h3>
 
 {#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
+	<div class="status" class:error={$message.status >= 400} class:success={$message.status == 200}>
+		{$message.text}
 	</div>
+{/if}
+
+{#if photoUrl}
+	<img src={photoUrl} alt="randomuser.me" />
 {/if}
 
 <form method="POST" use:enhance>
 	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		Photo ID (1-5000)<br />
+		<input type="number" aria-invalid={$errors.id ? 'true' : undefined} bind:value={$id} />
+		{#if $errors.id}<span class="invalid">{$errors.id}</span>{/if}
 	</label>
 
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
-
-	<button>Submit</button>
+	<div class="submit">
+		<button>Submit</button>
+		{#if $delayed}<img src={spinner} alt="Loading..." />{/if}
+	</div>
 </form>
 
 <hr />
@@ -46,6 +72,16 @@
 </p>
 
 <style>
+	.submit {
+		display: flex;
+		align-items: center;
+	}
+
+	.submit img {
+		padding: 0;
+		margin: 0 0.5rem;
+	}
+
 	.invalid {
 		color: red;
 	}

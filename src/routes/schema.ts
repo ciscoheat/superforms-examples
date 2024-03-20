@@ -1,6 +1,5 @@
-import { object, string, email, optional } from 'valibot';
+import { object, integer, minValue, number, maxValue } from 'valibot';
 
 export const schema = object({
-	name: optional(string(), 'Hello world!'),
-	email: string([email()])
+	id: number([integer(), minValue(1), maxValue(5000)])
 });
