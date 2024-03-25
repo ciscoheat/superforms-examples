@@ -11,9 +11,9 @@
 
 	export let label = '';
 	export let field: FormPathLeaves<T>;
-	export let form: SuperForm<T>;
+	export let superform: SuperForm<T>;
 
-	const { value, errors, constraints } = formFieldProxy(form, field);
+	const { value, errors, constraints } = formFieldProxy(superform, field);
 </script>
 
 {#if label}

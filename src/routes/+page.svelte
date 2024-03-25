@@ -11,7 +11,7 @@
 <h4>Register Form</h4>
 
 <!-- Form with dataType 'form' -->
-<Form action="?/register" data={data.regForm} invalidateAll={false} let:form let:message>
+<Form action="?/register" data={data.regForm} invalidateAll={false} let:message let:superform>
 	{#if message}
 		<div
 			class="status"
@@ -22,8 +22,8 @@
 		</div>
 	{/if}
 
-	<TextField type="text" {form} field="name" label="Name"></TextField>
-	<TextField type="text" {form} field="email" label="E-Mail"></TextField>
+	<TextField type="text" {superform} field="name" label="Name"></TextField>
+	<TextField type="text" {superform} field="email" label="E-Mail"></TextField>
 	<p><button>Submit</button></p>
 </Form>
 
@@ -37,7 +37,7 @@
 	data={data.profileForm}
 	dataType="json"
 	invalidateAll={false}
-	let:form
+	let:superform
 	let:message
 >
 	{#if message}
@@ -49,8 +49,8 @@
 			{message.text}
 		</div>
 	{/if}
-	<TextField type="text" {form} field="name" label="Name"></TextField>
-	<TextField type="number" {form} field="age" label="Age"></TextField>
+	<TextField type="text" {superform} field="name" label="Name"></TextField>
+	<TextField type="number" {superform} field="age" label="Age"></TextField>
 	<p><button>Submit</button></p>
 </Form>
 

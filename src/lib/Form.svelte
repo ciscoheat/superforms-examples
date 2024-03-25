@@ -10,7 +10,7 @@
 	export let dataType: 'form' | 'json' = 'form';
 	export let invalidateAll = true; // set to false to keep form data using muliple forms on a page
 
-	export const theForm = superForm(data, {
+	export const superform = superForm(data, {
 		dataType,
 		invalidateAll,
 		onUpdated({ form }) {
@@ -20,12 +20,13 @@
 		}
 	});
 
-	const { form, message, delayed, errors, allErrors, enhance } = theForm;
+	const { form, message, delayed, errors, allErrors, enhance } = superform;
 </script>
 
 <form method="POST" use:enhance {...$$restProps}>
 	<slot
-		form={theForm}
+		{superform}
+		form={$form}
 		message={$message}
 		errors={$errors}
 		allErrors={$allErrors}
