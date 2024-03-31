@@ -7,15 +7,17 @@
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form, {
-		taintedMessage: null
-	});
+	const { form, errors, message, enhance } = superForm(data.form);
 
-	// "SPA action form", a hidden superForm that checks for usernames against a form action
-	const { submitting, submit: submitCheckUsername } = superForm(
+	const {
+		delayed,
+		submit: submitCheckUsername,
+		enhance: submitEnhance
+	} = superForm(
 		{ username: '' },
 		{
-			SPA: '?/check',
+			invalidateAll: false,
+			applyAction: false,
 			onSubmit({ cancel, formData }) {
 				if (!$form.username) cancel();
 				formData.set('username', $form.username);
@@ -46,13 +48,15 @@
 	<label>
 		Username<br />
 		<input
+			form="check"
 			name="username"
 			aria-invalid={$errors.username ? 'true' : undefined}
 			bind:value={$form.username}
 			on:input={checkUsername}
 		/>
+		<input type="hidden" name="username" value={$form.username} />
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{#if $submitting}{@html spinner}{:else if $errors.username}❌{:else if $form.username}✅{/if}
+		{#if $delayed}{@html spinner}{:else if $errors.username}❌{:else if $form.username}✅{/if}
 		{#if $errors.username}<div class="invalid">{$errors.username[0]}</div>{/if}
 	</label>
 
@@ -69,6 +73,8 @@
 
 	<button>Submit</button>
 </form>
+
+<form id="check" method="POST" action="?/check" use:submitEnhance></form>
 
 <hr />
 <p><a target="_blank" href="https://superforms.rocks">Created with Superforms for SvelteKit</a></p>
