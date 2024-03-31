@@ -41,7 +41,7 @@ export const actions: Actions = {
 
 	check: async ({ request }) => {
 		// Introduce a little delay (large DB check)
-		await new Promise((res) => setTimeout(res, Math.random() * 500));
+		await new Promise((res) => setTimeout(res, 500 + Math.random() * 500));
 
 		const form = await superValidate(request, zod(usernameSchema));
 
