@@ -18,9 +18,8 @@
 		{
 			invalidateAll: false,
 			applyAction: false,
-			onSubmit({ cancel, formData }) {
+			onSubmit({ cancel }) {
 				if (!$form.username) cancel();
-				formData.set('username', $form.username);
 			},
 			onUpdated({ form }) {
 				$errors.username = form.errors.username;
