@@ -49,14 +49,31 @@
 					<td>{c.locked ? 'Yes' : 'No'}</td>
 					<td class="has-spinner">
 						<button
+							formaction="?/delete"
 							name="id"
 							value={c.id}
 							class="delete"
-							on:click={() => ($formId = c.id.toString())}>Delete</button
+							on:click={() => ($formId = c.id.toString())}
 						>
-
-						{#if $delayed && $formId == c.id.toString()}
-							<img alt="Loading..." class="spinner" src={spinner} />
+							{#if $delayed && $formId == c.id.toString()}
+								<img alt="Loading..." class="spinner" src={spinner} />
+							{:else}
+								Delete
+							{/if}
+						</button>
+						{#if c.locked}
+							<button
+								formaction="?/unlock"
+								name="id"
+								value={c.id}
+								on:click={() => ($formId = c.id.toString())}
+							>
+								{#if $delayed && $formId == c.id.toString()}
+									<img alt="Loading..." class="spinner" src={spinner} />
+								{:else}
+									Unlock
+								{/if}
+							</button>
 						{/if}
 					</td>
 				</tr>
@@ -66,6 +83,10 @@
 </form>
 
 <style>
+	button {
+		min-width: 75px;
+	}
+
 	a {
 		text-decoration: underline;
 	}
