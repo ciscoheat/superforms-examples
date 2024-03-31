@@ -14,7 +14,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	delete: async ({ request }) => {
 		await new Promise((r) => setTimeout(r, 1000));
 
 		const form = await superValidate(request, zod(schema));
@@ -39,5 +39,27 @@ export const actions: Actions = {
 		constellations.splice(index, 1);
 
 		return message(form, 'Constellation deleted from database.');
+	},
+
+	unlock: async ({ request }) => {
+		await new Promise((r) => setTimeout(r, 1000));
+
+		const form = await superValidate(request, zod(schema));
+
+		console.log('POST', form);
+
+		if (!form.valid) {
+			return message(form, 'Invalid ID for constellation.');
+		}
+
+		const constellation = constellations.find((s) => s.id == form.data.id);
+
+		if (!constellation) {
+			return message(form, 'Cannot find constellation in database.', { status: 404 });
+		}
+
+		constellation.locked = false;
+
+		return message(form, 'Constellation unlocked.');
 	}
 };
