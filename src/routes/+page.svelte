@@ -17,7 +17,7 @@
 		bind:value={$form.name}
 		{...$constraints.name}
 	/>
-	{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+	{#if $errors.name}<span class="invalid">Please enter your name</span>{/if}
 
 	<label for="email">E-mail</label>
 	<input
@@ -27,7 +27,7 @@
 		bind:value={$form.email}
 		{...$constraints.email}
 	/>
-	{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
+	{#if $errors.email}<span class="invalid">Please enter a valid email</span>{/if}
 
 	<div><button>Submit</button></div>
 </form>
