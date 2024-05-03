@@ -10,7 +10,7 @@
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
+<h3>Superforms testing ground - JSON Schema</h3>
 
 {#if $message}
 	<!-- eslint-disable-next-line svelte/valid-compile -->
@@ -23,7 +23,7 @@
 	<label>
 		Name<br />
 		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		{#if $errors.name}<span class="invalid">Please enter your name</span>{/if}
 	</label>
 
 	<label>
@@ -34,7 +34,7 @@
 			aria-invalid={$errors.email ? 'true' : undefined}
 			bind:value={$form.email}
 		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
+		{#if $errors.email}<span class="invalid">Please enter a valid email</span>{/if}
 	</label>
 
 	<button>Submit</button>
