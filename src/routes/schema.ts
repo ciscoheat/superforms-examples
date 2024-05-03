@@ -1,7 +1,12 @@
-import { z } from 'zod';
+import type { JSONSchema } from 'sveltekit-superforms';
 
-// Define at the top-level so it stays in memory and the adapter can be cached
-export const schema = z.object({
-	name: z.string().default('Hello world!'),
-	email: z.string().email()
-});
+export const schema = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 2, default: 'Hello world!' },
+		email: { type: 'string', format: 'email' }
+	},
+	required: ['name', 'email'],
+	additionalProperties: false,
+	$schema: 'http://json-schema.org/draft-07/schema#'
+} as const satisfies JSONSchema;
