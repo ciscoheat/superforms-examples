@@ -1,6 +1,12 @@
-import { z } from 'zod';
+import type { JSONSchema } from 'sveltekit-superforms';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
-});
+export const schema = {
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 2 },
+		email: { type: 'string', format: 'email' }
+	},
+	required: ['name', 'email'],
+	additionalProperties: false,
+	$schema: 'http://json-schema.org/draft-07/schema#'
+} as const satisfies JSONSchema;
