@@ -1,9 +1,8 @@
 import type { PageServerLoad } from './$types.js';
 
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-//import { error } from '@sveltejs/kit';
 import { z } from 'zod';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms';
 import { ledger } from './ledger.js';
 
 const filterSchema = z
@@ -26,7 +25,7 @@ const categories = [
 	{ id: 7, name: 'Education' },
 	{ id: 8, name: 'Personal Care' },
 	{ id: 9, name: 'Clothing' }
-];
+].toSorted((a, b) => (a.name < b.name ? -1 : 1));
 
 export const load: PageServerLoad = async ({ url }) => {
 	const filters = await superValidate(url, zod(filterSchema));
