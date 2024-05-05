@@ -1,21 +1,53 @@
-import type { Actions, PageServerLoad } from './$types.js';
+import type { PageServerLoad } from './$types.js';
 
-import { superValidate, message } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { fail } from '@sveltejs/kit';
-import { schema } from './schema.js';
+//import { error } from '@sveltejs/kit';
+import { z } from 'zod';
+import { ledger } from './ledger.js';
 
-export const load: PageServerLoad = async () => {
-	return { form: await superValidate(zod(schema)) };
-};
+const filterSchema = z
+	.object({
+		min: z.number(),
+		max: z.number(),
+		category: z.number().int().positive(),
+		from: z.date(),
+		to: z.date()
+	})
+	.partial();
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await superValidate(request, zod(schema));
-		console.log(form);
+const categories = [
+	{ id: 1, name: 'Eating out' },
+	{ id: 2, name: 'Groceries' },
+	{ id: 3, name: 'Transportation' },
+	{ id: 4, name: 'Utilities' },
+	{ id: 5, name: 'Entertainment' },
+	{ id: 6, name: 'Healthcare' },
+	{ id: 7, name: 'Education' },
+	{ id: 8, name: 'Personal Care' },
+	{ id: 9, name: 'Clothing' }
+];
 
-		if (!form.valid) return fail(400, { form });
+export const load: PageServerLoad = async ({ url }) => {
+	const filters = await superValidate(url, zod(filterSchema));
 
-		return message(form, 'Form posted successfully!');
+	if (!filters.valid) {
+		//error(400, 'Invalid filter: ' + Object.keys(filters.errors));
+		console.log(filters.data);
 	}
+
+	const { data } = filters;
+
+	const transactions = ledger
+		.filter(
+			(t) =>
+				(data.min === undefined ? true : t.amount >= data.min) &&
+				(data.max === undefined ? true : t.amount <= data.max) &&
+				(data.category === undefined ? true : t.category == data.category) &&
+				(data.from === undefined ? true : t.date >= data.from) &&
+				(data.to === undefined ? true : t.date <= data.to)
+		)
+		.toSorted((a, b) => (a.date < b.date ? -1 : 1));
+
+	return { transactions, categories };
 };
