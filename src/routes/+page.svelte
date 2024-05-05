@@ -4,42 +4,44 @@
 
 	let { data } = $props();
 
-	function urlParam(name: string) {
-		return page.url.searchParams.get(name);
+	let Filters = $derived(page.url);
+
+	function Filters_get(name: string) {
+		return Filters.searchParams.get(name);
 	}
 
-	function updateFilter(el: HTMLInputElement | HTMLSelectElement) {
-		const url = new URL(page.url);
+	function Filters_update(el: HTMLInputElement | HTMLSelectElement) {
+		const url = new URL(Filters);
 		if (el.value !== '') url.searchParams.set(el.name, el.value);
 		else url.searchParams.delete(el.name);
 
 		goto(url, { keepFocus: true });
 	}
 
-	function clearFilters(...params: string[]) {
-		const url = new URL(page.url);
+	function Filters_clear(...params: string[]) {
+		const url = new URL(Filters);
 		params.forEach((p) => url.searchParams.delete(p));
 		goto(url, { keepFocus: true });
 	}
 
-	function isFiltered(...params: string[]) {
-		return params.length > 0 && params.some((p) => page.url.searchParams.get(p) !== null);
+	function Filters_isFiltered(...params: string[]) {
+		return params.length > 0 && params.some((p) => Filters.searchParams.has(p));
 	}
 </script>
 
 <div class="filters">
-	{#snippet clearFilter(params: string[])}
-		{#if isFiltered(...params)}
-			<button onclick={() => clearFilters(...params)}>❌</button>
+	{#snippet clearFilters(params: string[])}
+		{#if Filters_isFiltered(...params)}
+			<button onclick={() => Filters_clear(...params)}>❌</button>
 		{/if}
 	{/snippet}
 
 	<div>Category:</div>
 	<div>
-		<select name="category" oninput={(e) => updateFilter(e.currentTarget)}>
+		<select name="category" oninput={(e) => Filters_update(e.currentTarget)}>
 			<option value="">&lt;All&gt;</option>
 			{#each data.categories as category}
-				<option value={category.id} selected={urlParam('category') === category.id.toString()}>
+				<option value={category.id} selected={Filters_get('category') === category.id.toString()}>
 					{category.name}
 				</option>
 			{/each}
@@ -52,19 +54,19 @@
 			>Min <input
 				name="min"
 				type="number"
-				value={urlParam('min')}
-				oninput={(e) => updateFilter(e.currentTarget)}
+				value={Filters_get('min')}
+				oninput={(e) => Filters_update(e.currentTarget)}
 			/></span
 		>
 		<span
 			>Max <input
 				name="max"
 				type="number"
-				value={urlParam('max')}
-				oninput={(e) => updateFilter(e.currentTarget)}
+				value={Filters_get('max')}
+				oninput={(e) => Filters_update(e.currentTarget)}
 			/></span
 		>
-		{@render clearFilter(['min', 'max'])}
+		{@render clearFilters(['min', 'max'])}
 	</div>
 
 	<div>Date range:</div>
@@ -73,19 +75,19 @@
 			>From <input
 				name="from"
 				type="date"
-				value={urlParam('from')}
-				oninput={(e) => updateFilter(e.currentTarget)}
+				value={Filters_get('from')}
+				oninput={(e) => Filters_update(e.currentTarget)}
 			/></span
 		>
 		<span
 			>to <input
 				name="to"
 				type="date"
-				value={urlParam('to')}
-				oninput={(e) => updateFilter(e.currentTarget)}
+				value={Filters_get('to')}
+				oninput={(e) => Filters_update(e.currentTarget)}
 			/></span
 		>
-		{@render clearFilter(['from', 'to'])}
+		{@render clearFilters(['from', 'to'])}
 	</div>
 </div>
 
