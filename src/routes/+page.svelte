@@ -1,44 +1,112 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	function urlParam(name: string) {
+		return page.url.searchParams.get(name);
+	}
+
+	function updateFilter(el: HTMLInputElement | HTMLSelectElement) {
+		const url = new URL(page.url);
+		if (el.value !== '') url.searchParams.set(el.name, el.value);
+		else url.searchParams.delete(el.name);
+
+		goto(url, { keepFocus: true });
+	}
+
+	function clearFilters(...params: string[]) {
+		const url = new URL(page.url);
+		params.forEach((p) => url.searchParams.delete(p));
+		goto(url, { keepFocus: true });
+	}
+
+	function isFiltered(...params: string[]) {
+		return params.length > 0 && params.some((p) => page.url.searchParams.get(p) !== null);
+	}
 </script>
 
-<SuperDebug data={$form} />
+<div class="filters">
+	{#snippet clearFilter(params: string[])}
+		{#if isFiltered(...params)}
+			<button onclick={() => clearFilters(...params)}>❌</button>
+		{/if}
+	{/snippet}
 
-<h3>Superforms testing ground - Zod</h3>
-
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
+	<div>Category:</div>
+	<div>
+		<select name="category" oninput={(e) => updateFilter(e.currentTarget)}>
+			<option value="">&lt;All&gt;</option>
+			{#each data.categories as category}
+				<option value={category.id} selected={urlParam('category') === category.id.toString()}>
+					{category.name}
+				</option>
+			{/each}
+		</select>
 	</div>
-{/if}
 
-<form method="POST" use:enhance>
-	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
+	<div>Amount:</div>
+	<div>
+		<span
+			>Min <input
+				name="min"
+				type="number"
+				value={urlParam('min')}
+				oninput={(e) => updateFilter(e.currentTarget)}
+			/></span
+		>
+		<span
+			>Max <input
+				name="max"
+				type="number"
+				value={urlParam('max')}
+				oninput={(e) => updateFilter(e.currentTarget)}
+			/></span
+		>
+		{@render clearFilter(['min', 'max'])}
+	</div>
 
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
+	<div>Date range:</div>
+	<div>
+		<span
+			>From <input
+				name="from"
+				type="date"
+				value={urlParam('from')}
+				oninput={(e) => updateFilter(e.currentTarget)}
+			/></span
+		>
+		<span
+			>to <input
+				name="to"
+				type="date"
+				value={urlParam('to')}
+				oninput={(e) => updateFilter(e.currentTarget)}
+			/></span
+		>
+		{@render clearFilter(['from', 'to'])}
+	</div>
+</div>
 
-	<button>Submit</button>
-</form>
+<table>
+	<thead>
+		<tr>
+			<th scope="col">Date</th>
+			<th scope="col">Amount</th>
+			<th scope="col">Category</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.transactions as t}
+			<tr>
+				<td>{t.date.toISOString().slice(0, 10)}</td>
+				<td>{t.amount.toFixed(2)}</td>
+				<td>{data.categories.find((c) => c.id === t.category)?.name}</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
 
 <hr />
 <p>
@@ -46,28 +114,29 @@
 </p>
 
 <style>
-	.invalid {
-		color: red;
+	.filters button {
+		padding: 0;
+		background-color: transparent;
+		border: none;
 	}
 
-	.status {
-		color: white;
-		padding: 4px;
-		padding-left: 8px;
-		border-radius: 2px;
-		font-weight: 500;
+	.filters {
+		display: grid;
+		column-gap: 2rem;
+		grid-template-columns: minmax(min-content, 100px) 1fr;
+		align-items: baseline;
 	}
 
-	.status.success {
-		background-color: seagreen;
+	.filters input[type='number'] {
+		max-width: 100px;
 	}
 
-	.status.error {
-		background-color: #ff2a02;
+	table {
+		margin-top: 2rem;
 	}
 
-	input {
-		background-color: #ddd;
+	thead {
+		background-color: #eee;
 	}
 
 	a {
@@ -76,10 +145,5 @@
 
 	hr {
 		margin-top: 4rem;
-	}
-
-	form {
-		padding-top: 1rem;
-		padding-bottom: 1rem;
 	}
 </style>

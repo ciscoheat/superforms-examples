@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
-});
+export const filterSchema = z
+	.object({
+		amount: z.number(),
+		category: z.number().int().positive(),
+		from: z.date(),
+		to: z.date()
+	})
+	.partial();
