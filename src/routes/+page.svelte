@@ -2,15 +2,19 @@
 	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
+	import DateInput from './DateInput.svelte';
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const superform = superForm(data.form, {
+		dataType: 'json'
+	});
+	const { form, message, enhance } = superform;
 </script>
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
+<h3>Array of date inputs</h3>
 
 {#if $message}
 	<!-- eslint-disable-next-line svelte/valid-compile -->
@@ -20,23 +24,10 @@
 {/if}
 
 <form method="POST" use:enhance>
-	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
-	</label>
-
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
-
+	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+	{#each $form.workDone as _, i}
+		<div>Work done: <DateInput {superform} field="workDone[{i}].date" /></div>
+	{/each}
 	<button>Submit</button>
 </form>
 
@@ -46,10 +37,6 @@
 </p>
 
 <style>
-	.invalid {
-		color: red;
-	}
-
 	.status {
 		color: white;
 		padding: 4px;
@@ -64,10 +51,6 @@
 
 	.status.error {
 		background-color: #ff2a02;
-	}
-
-	input {
-		background-color: #ddd;
 	}
 
 	a {

@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+	workDone: z
+		.object({
+			date: z.date().nullish(),
+			worker: z.string().nullish()
+		})
+		.array()
 });
