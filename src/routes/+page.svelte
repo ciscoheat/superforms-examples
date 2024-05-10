@@ -3,14 +3,20 @@
 	import { superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
 	import DateInput from './DateInput.svelte';
+	import TextInput from './TextInput.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	const superform = superForm(data.form, {
+		resetForm: false,
 		dataType: 'json'
 	});
 	const { form, message, enhance } = superform;
+
+	function addWorker() {
+		$form.workDone = [...$form.workDone, { date: null, worker: '' }];
+	}
 </script>
 
 <SuperDebug data={$form} />
@@ -25,10 +31,18 @@
 {/if}
 
 <form method="POST" use:enhance>
-	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-	{#each $form.workDone as _, i}
-		<div>Work done: <DateInput {superform} field="workDone[{i}].date" /></div>
-	{/each}
+	<table>
+		<tbody>
+			<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+			{#each $form.workDone as _, i}
+				<tr>
+					<td>Name <TextInput {superform} field="workDone[{i}].worker" /></td>
+					<td>Work done <DateInput {superform} field="workDone[{i}].date" /></td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+	<button type="button" on:click={() => addWorker()}>Add worker</button>
 	<button>Submit</button>
 </form>
 
