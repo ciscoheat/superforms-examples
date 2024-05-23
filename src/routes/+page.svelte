@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
 
 	export let data;
 
 	const { form, errors, message, enhance } = superForm(data.form);
 </script>
-
-<SuperDebug data={$form} />
 
 <h3>Superforms testing ground - Zod</h3>
 
