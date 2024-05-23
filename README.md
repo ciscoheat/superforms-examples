@@ -1,3 +1,3 @@
-# superforms-examples-base
+# superforms-examples
 
-Contains the base template for [Superforms](https://superforms.rocks) examples.
+Ready-to-use examples for [Superforms](https://superforms.rocks).
