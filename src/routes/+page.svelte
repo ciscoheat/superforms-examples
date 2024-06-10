@@ -50,7 +50,7 @@
 {/if}
 
 {#if photoUrl}
-	<img src={photoUrl} alt="randomuser.me" />
+	<img class="photo" src={photoUrl} alt="randomuser.me" />
 {/if}
 
 <form method="POST" use:enhance>
@@ -72,6 +72,10 @@
 </p>
 
 <style>
+	.photo {
+		margin-top: 1rem;
+	}
+
 	.submit {
 		display: flex;
 		align-items: center;
