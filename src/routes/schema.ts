@@ -1,5 +1,5 @@
-import { object, integer, minValue, number, maxValue } from 'valibot';
+import { pipe, object, integer, minValue, number, maxValue } from 'valibot';
 
 export const schema = object({
-	id: number([integer(), minValue(1), maxValue(5000)])
+	id: pipe(number(), integer(), minValue(1), maxValue(5000))
 });
