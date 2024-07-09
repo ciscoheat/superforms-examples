@@ -1,6 +1,8 @@
-import { z } from 'zod';
+import { object, string, size, define } from 'superstruct';
 
-export const schema = z.object({
-	name: z.string().min(2),
-	email: z.string().email()
+const email = () => define<string>('email', (value) => String(value).includes('@'));
+
+export const schema = object({
+	name: size(string(), 2, Infinity),
+	email: email()
 });
