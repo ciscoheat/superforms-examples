@@ -39,6 +39,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"arktype": "2.0.0-dev.21"
+		"arktype": "2.0.0-beta.0"
 	}
 }
