@@ -6,7 +6,7 @@ import { fail } from '@sveltejs/kit';
 import { schema } from './schema.js';
 
 // Arktype requires explicit default values for now
-const defaults = { name: 'Hello world!', email: '' };
+const defaults = { name: '', email: '' };
 
 export const load: PageServerLoad = async () => {
 	return { form: await superValidate(arktype(schema, { defaults })) };
