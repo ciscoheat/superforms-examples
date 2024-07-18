@@ -5,7 +5,7 @@ import { schema } from './schema.js';
 
 // Arktype requires explicit default schema values for now
 // Make sure they are defined on the top-level so the adapter can be cached
-const defaults = { name: '', email: '' };
+const defaults = { name: 'Hello world', email: '' };
 
 export const load = async () => {
 	const form = await superValidate(arktype(schema, { defaults }));
