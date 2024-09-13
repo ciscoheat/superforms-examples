@@ -12,7 +12,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main",
-		"push": "git push --all origin"
+		"push": "git push --all origin",
+		"corefix": "set COREPACK_ENABLE_AUTO_PIN=0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.2.4",
