@@ -18,16 +18,18 @@
 		{
 			invalidateAll: false,
 			applyAction: false,
+			multipleSubmits: 'abort',
 			onSubmit({ cancel }) {
 				if (!$form.username) cancel();
 			},
 			onUpdated({ form }) {
+				// Update the other form to show the error message
 				$errors.username = form.errors.username;
 			}
 		}
 	);
 
-	const checkUsername = debounce(300, submitCheckUsername);
+	const checkUsername = debounce(200, submitCheckUsername);
 </script>
 
 <SuperDebug data={$form} />
@@ -53,9 +55,18 @@
 			bind:value={$form.username}
 			on:input={checkUsername}
 		/>
+
 		<input type="hidden" name="username" value={$form.username} />
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{#if $delayed}{@html spinner}{:else if $errors.username}❌{:else if $form.username}✅{/if}
+
+		{#if $delayed}
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html spinner}
+		{:else if $errors.username}
+			❌
+		{:else if $form.username && 'username' in $errors}
+			✅
+		{/if}
+
 		{#if $errors.username}<div class="invalid">{$errors.username[0]}</div>{/if}
 	</label>
 
