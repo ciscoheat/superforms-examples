@@ -11,7 +11,7 @@
 		"test": "vitest",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main",
+		"rebase": "git branch --format=%(refname:short) | xargs -n 1 -t git rebase main && git checkout main",
 		"push": "git push --all origin",
 		"corefix": "set COREPACK_ENABLE_AUTO_PIN=0"
 	},
