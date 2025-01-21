@@ -39,6 +39,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@vinejs/vine": "^1.7.1"
+		"@vinejs/vine": "^3.0.0"
 	}
 }
