@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
 	import spinner from '$lib/spinner.svg';
 
-	export let data;
+	let { data } = $props();
 
 	const { form, errors, enhance, delayed, message, constraints, reset } = superForm(data.form, {
 		resetForm: false,
@@ -32,7 +32,7 @@
 
 {#if $message}
 	<!-- eslint-disable-next-line svelte/valid-compile -->
-	<h4 class="message" class:success={$page.status < 400} class:error={$page.status >= 400}>
+	<h4 class="message" class:success={page.status < 400} class:error={page.status >= 400}>
 		{$message}
 	</h4>
 {/if}
@@ -71,7 +71,7 @@
 			<button
 				name="delete"
 				class="danger"
-				on:click={(e) => !confirm('Are you sure?') && e.preventDefault()}
+				onclick={(e) => !confirm('Are you sure?') && e.preventDefault()}
 			>
 				Delete user
 			</button>
