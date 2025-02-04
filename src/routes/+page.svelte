@@ -1,40 +1,39 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
+	import { enhance } from '$app/forms';
 
-	let { data } = $props();
+	let { form } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	let message = $derived(form?.form?.message);
+	let errors = $derived(form?.form?.errors ?? {});
+
+	$effect(() => {
+		// Focus on first error
+		if (Object.keys(errors).length) {
+			document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+		}
+	});
 </script>
 
-<SuperDebug data={$form} />
+<h3>Superforms - Custom client</h3>
 
-<h3>Superforms testing ground - Zod</h3>
-
-{#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
+{#if message}
 	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
-		{$message}
+		{message}
 	</div>
 {/if}
 
 <form method="POST" use:enhance>
 	<label>
 		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		<input name="name" aria-invalid={errors.name ? 'true' : undefined} />
+		{#if errors.name}<span class="invalid">{errors.name}</span>{/if}
 	</label>
 
 	<label>
 		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
+		<input name="email" type="email" aria-invalid={errors.email ? 'true' : undefined} />
+		{#if errors.email}<span class="invalid">{errors.email}</span>{/if}
 	</label>
 
 	<button>Submit</button>
