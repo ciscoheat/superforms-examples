@@ -5,15 +5,17 @@
 
 	let { data } = $props();
 
-	const { form, errors, message, enhance } = superForm(data.form);
+	const { form, errors, message, enhance } = superForm(data.form, {
+		taintedMessage: null,
+		resetForm: true
+	});
 </script>
 
 <SuperDebug data={$form} />
 
-<h3>Superforms testing ground - Zod</h3>
+<h3>Superforms - Discriminated union</h3>
 
 {#if $message}
-	<!-- eslint-disable-next-line svelte/valid-compile -->
 	<div class="status" class:error={page.status >= 400} class:success={page.status == 200}>
 		{$message}
 	</div>
@@ -21,21 +23,25 @@
 
 <form method="POST" use:enhance>
 	<label>
-		Name<br />
-		<input name="name" aria-invalid={$errors.name ? 'true' : undefined} bind:value={$form.name} />
-		{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		<select name="type" bind:value={$form.type}>
+			{#each ['Type', 'empty', 'extra'] as value, i}
+				<option value={i ? value : ''} selected={$form.type == value}>{value}</option>
+			{/each}
+		</select>
+		{#if $errors.type}<span class="invalid">{$errors.type}</span>{/if}
 	</label>
-
-	<label>
-		Email<br />
-		<input
-			name="email"
-			type="email"
-			aria-invalid={$errors.email ? 'true' : undefined}
-			bind:value={$form.email}
-		/>
-		{#if $errors.email}<span class="invalid">{$errors.email}</span>{/if}
-	</label>
+	{#if $form.type === 'extra'}
+		<label>
+			Extra name<br />
+			<input
+				name="name"
+				type="text"
+				aria-invalid={$errors.name ? 'true' : undefined}
+				bind:value={$form.name}
+			/>
+			{#if $errors.name}<span class="invalid">{$errors.name}</span>{/if}
+		</label>
+	{/if}
 
 	<button>Submit</button>
 </form>
