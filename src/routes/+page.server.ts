@@ -12,9 +12,14 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const form = await superValidate(request, zod(schema));
-		console.log(form);
 
 		if (!form.valid) return fail(400, { form });
+
+		if (form.data.type === 'empty') {
+			console.log('Empty name submitted');
+		} else {
+			console.log('Extra name: ' + form.data.name);
+		}
 
 		return message(form, 'Form posted successfully!');
 	}
