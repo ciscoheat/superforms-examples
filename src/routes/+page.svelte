@@ -8,9 +8,11 @@
 	let { data } = $props();
 
 	const steps = [zod(schemaStep1), zod(schemaStep2)];
-	let step = 1;
+	let step = $state(1);
 
-	$: options.validators = steps[step - 1];
+	$effect(() => {
+		options.validators = steps[step - 1];
+	});
 
 	const { form, errors, message, enhance, validateForm, options } = superForm(data.form, {
 		// No need for hidden fields with dataType: 'json'
