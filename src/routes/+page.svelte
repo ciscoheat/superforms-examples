@@ -1,18 +1,14 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms/client';
-	//import SuperDebug from 'sveltekit-superforms'
 	import spinner from './spinner.svg';
+	//import SuperDebug from 'sveltekit-superforms'
 
 	let { data } = $props();
 
-	const { message, enhance, delayed, formId } = superForm(data.form, {
-		delayMs: 300,
+	const { message, enhance, formId, submitting } = superForm(data.form, {
 		clearOnSubmit: 'errors'
 	});
-
-	// eslint-disable-next-line svelte/valid-compile
-	$page;
 </script>
 
 <h3>Superforms data list actions</h3>
@@ -30,8 +26,8 @@
 <div
 	class="status"
 	class:hidden={!$message}
-	class:error={$page.status >= 400}
-	class:success={$page.status == 200}
+	class:error={page.status >= 400}
+	class:success={page.status == 200}
 >
 	{$message}
 </div>
@@ -50,12 +46,13 @@
 					<td class="has-spinner">
 						<button
 							formaction="?/delete"
+							disabled={$submitting && $formId !== c.id.toString()}
 							name="id"
 							value={c.id}
 							class="delete"
-							onclick={() => ($formId = c.id.toString())}
+							onclick={() => ($formId = $submitting ? $formId : c.id.toString())}
 						>
-							{#if $delayed && $formId == c.id.toString()}
+							{#if $submitting && $formId == c.id.toString()}
 								<img alt="Loading..." class="spinner" src={spinner} />
 							{:else}
 								Delete
@@ -64,11 +61,12 @@
 						{#if c.locked}
 							<button
 								formaction="?/unlock"
+								disabled={$submitting && $formId !== c.id.toString()}
 								name="id"
 								value={c.id}
-								onclick={() => ($formId = c.id.toString())}
+								onclick={() => ($formId = $submitting ? $formId : c.id.toString())}
 							>
-								{#if $delayed && $formId == c.id.toString()}
+								{#if $submitting && $formId == c.id.toString()}
 									<img alt="Loading..." class="spinner" src={spinner} />
 								{:else}
 									Unlock
@@ -133,5 +131,10 @@
 	form {
 		padding-top: 1rem;
 		padding-bottom: 1rem;
+	}
+
+	button[disabled] {
+		background-color: gray;
+		cursor: default;
 	}
 </style>
