@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 // Define at the top-level so it stays in memory and the adapter can be cached
 export const schema = z.object({
 	name: z.string().default('Hello world!'),
-	email: z.string().email()
+	email: z.email()
 });

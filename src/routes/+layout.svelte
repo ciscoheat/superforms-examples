@@ -1,6 +1,8 @@
 <script lang="ts">
 	import 'normalize.css';
 	import 'sakura.css';
+
+	let { children } = $props();
 </script>
 
-<slot />
+{@render children()}
