@@ -1,12 +1,12 @@
 import { superValidate, defaultValues, message, type Infer } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { schemaStep1, schemaStep2 } from './schema.js';
 import type { Actions } from './$types.js';
 
 // Strongly typed status message
 type Message = { step: number; text?: string };
 
-const steps = [zod(schemaStep1), zod(schemaStep2)] as const;
+const steps = [zod4(schemaStep1), zod4(schemaStep2)] as const;
 const lastStep = steps[1];
 
 export const load = async () => {
