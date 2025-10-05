@@ -1,5 +1,5 @@
 import { superValidate, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { error, fail, redirect } from '@sveltejs/kit';
 
 import { users, userId, userSchema } from '$lib/users';
@@ -16,14 +16,14 @@ export const load: PageServerLoad = async ({ params }) => {
 	if (params.id && !user) throw error(404, 'User not found.');
 
 	// If user is null, default values for the schema will be returned.
-	const form = await superValidate(user, zod(crudSchema));
+	const form = await superValidate(user, zod4(crudSchema));
 	return { form, users };
 };
 
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const formData = await request.formData();
-		const form = await superValidate(formData, zod(crudSchema));
+		const form = await superValidate(formData, zod4(crudSchema));
 
 		if (formData.has('delay')) {
 			await new Promise((r) => setTimeout(r, 2000));
