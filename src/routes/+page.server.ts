@@ -1,19 +1,19 @@
 import type { Actions } from './$types.js';
 import { superValidate, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { registerSchema, profileSchema } from '$lib/schema';
 import { fail } from '@sveltejs/kit';
 
 export const load = async () => {
-	const regForm = await superValidate(zod(registerSchema));
-	const profileForm = await superValidate(zod(profileSchema));
+	const regForm = await superValidate(zod4(registerSchema));
+	const profileForm = await superValidate(zod4(profileSchema));
 
 	return { regForm, profileForm };
 };
 
 export const actions = {
 	register: async ({ request }) => {
-		const regForm = await superValidate(request, zod(registerSchema));
+		const regForm = await superValidate(request, zod4(registerSchema));
 
 		console.log('register', regForm);
 
@@ -23,7 +23,7 @@ export const actions = {
 	},
 
 	edit: async ({ request }) => {
-		const profileForm = await superValidate(request, zod(profileSchema));
+		const profileForm = await superValidate(request, zod4(profileSchema));
 
 		console.log('edit', profileForm);
 
