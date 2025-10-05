@@ -5,7 +5,7 @@ import {
 	type SuperValidated,
 	type Infer
 } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail } from '@sveltejs/kit';
 import { schema } from './schema.js';
 import type { Actions } from './$types.js';
@@ -14,7 +14,7 @@ import { takenUsernames } from './usernames.js';
 const usernameSchema = schema.pick({ username: true });
 
 export const load = async () => {
-	const form = await superValidate(zod(schema));
+	const form = await superValidate(zod4(schema));
 	return { form };
 };
 
@@ -28,7 +28,7 @@ function checkUsername(form: SuperValidated<Infer<typeof usernameSchema>>) {
 
 export const actions: Actions = {
 	post: async ({ request }) => {
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		if (!form.valid || !checkUsername(form)) return fail(400, { form });
 
@@ -43,7 +43,7 @@ export const actions: Actions = {
 		// Introduce a little delay (large DB check)
 		await new Promise((res) => setTimeout(res, 500 + Math.random() * 500));
 
-		const form = await superValidate(request, zod(usernameSchema));
+		const form = await superValidate(request, zod4(usernameSchema));
 
 		if (!form.valid || !checkUsername(form)) return fail(400, { form });
 		else return { form };
