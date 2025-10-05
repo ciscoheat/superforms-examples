@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from './$types.js';
 import { superValidate, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 import { constellations, constellationSchema } from '$lib/constellations';
 
@@ -9,7 +9,7 @@ const schema = z.object({
 });
 
 export const load: PageServerLoad = async () => {
-	const form = await superValidate(zod(schema));
+	const form = await superValidate(zod4(schema));
 	return { form, constellations };
 };
 
@@ -17,7 +17,7 @@ export const actions: Actions = {
 	delete: async ({ request }) => {
 		await new Promise((r) => setTimeout(r, 1000));
 
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		console.log('POST', form);
 
@@ -44,7 +44,7 @@ export const actions: Actions = {
 	unlock: async ({ request }) => {
 		await new Promise((r) => setTimeout(r, 1000));
 
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		console.log('POST', form);
 
