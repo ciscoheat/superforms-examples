@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { schema } from './schema.js';
 	import { fileProxy, filesFieldProxy, superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
@@ -7,7 +7,7 @@
 	let { data } = $props();
 
 	const superform = superForm(data.form, {
-		validators: zod(schema),
+		validators: zod4(schema),
 		resetForm: true
 	});
 	const { form, message, enhance, errors } = superform;
