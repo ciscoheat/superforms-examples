@@ -2,12 +2,12 @@
 	import { page } from '$app/state';
 	import { superForm } from 'sveltekit-superforms';
 	import SuperDebug from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { schemaStep1, schemaStep2 } from './schema.js';
 
 	let { data } = $props();
 
-	const steps = [zod(schemaStep1), zod(schemaStep2)];
+	const steps = [zod4(schemaStep1), zod4(schemaStep2)];
 	let step = $state(1);
 
 	$effect(() => {

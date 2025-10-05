@@ -1,17 +1,17 @@
 import { superValidate, message } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { schemaStep2 as lastStep } from './schema';
 import { fail } from '@sveltejs/kit';
 
 export const load = async () => {
 	// Create the form with the last step, to get all default values
-	const form = await superValidate(zod(lastStep));
+	const form = await superValidate(zod4(lastStep));
 	return { form };
 };
 
 export const actions = {
 	default: async ({ request }) => {
-		const form = await superValidate(request, zod(lastStep));
+		const form = await superValidate(request, zod4(lastStep));
 
 		console.log(form);
 
