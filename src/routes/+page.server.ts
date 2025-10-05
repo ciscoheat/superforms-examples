@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 
 import { z } from 'zod';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import { ledger } from './ledger.js';
 
@@ -28,7 +28,7 @@ const categories = [
 ].toSorted((a, b) => (a.name < b.name ? -1 : 1));
 
 export const load: PageServerLoad = async ({ url }) => {
-	const filters = await superValidate(url, zod(filterSchema));
+	const filters = await superValidate(url, zod4(filterSchema));
 
 	if (!filters.valid) {
 		//error(400, 'Invalid filter: ' + Object.keys(filters.errors));
